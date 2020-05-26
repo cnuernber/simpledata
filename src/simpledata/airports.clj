@@ -1,6 +1,7 @@
 (ns simpledata.airports
   (:require [tech.ml.dataset :as ds]
-            [tech.v2.datatype.functional :as dfn]))
+            [tech.v2.datatype.functional :as dfn]
+            [tech.viz.vega :as vega]))
 
 
 (defn obtain-dataset
@@ -39,5 +40,8 @@
   (ds/sort-by-column :average-alt > by-country)
 
   (ds/sort-by-column :num-airports > by-country)
+
+  (-> (vega/histogram (@ds* :altitude) "Altitude" {:bin-count 20})
+      (vega/vega->svg-file "alt.svg"))
 
   )
