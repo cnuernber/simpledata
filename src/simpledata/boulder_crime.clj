@@ -32,12 +32,16 @@
   (def ds (ds/column-cast @ds* :REPORTDATE [:zoned-date-time
                                             "yyyy/MM/dd HH:mm:ssx"]))
 
+
   ;;Second, reload the dataset
-  (def ds (ds/->dataset "file://data/boulder-crime.csv"
-                        {:key-fn keyword
-                         :parser-fn {"REPORTDATE"
-                                     [:zoned-date-time
-                                      "yyyy/MM/dd HH:mm:ssx"]}}))
+  (def ds (do
+            ;;make sure file is downloaded
+            @ds*
+            (ds/->dataset "file://data/boulder-crime.csv"
+                          {:key-fn keyword
+                           :parser-fn {"REPORTDATE"
+                                         [:zoned-date-time
+                                          "yyyy/MM/dd HH:mm:ssx"]}})))
 
   (vary-meta (ds/descriptive-stats ds)
              assoc :print-column-max-width 15)
@@ -46,5 +50,8 @@
   (->> (ds :OFFENSE)
        (frequencies)
        (sort-by second >))
+
+
+  (sql/insert-dataset! (vary-meta ds assoc :name "boulder_crime"))
 
   )
