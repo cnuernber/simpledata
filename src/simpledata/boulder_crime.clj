@@ -52,6 +52,6 @@
        (sort-by second >))
 
 
-  (sql/insert-dataset! (vary-meta ds assoc :name "boulder_crime"))
+  (sql/insert-dataset! (vary-meta ds assoc :name "boulder_crime2"))
 
   )
