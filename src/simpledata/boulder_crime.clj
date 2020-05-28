@@ -9,12 +9,12 @@
 
 (defn obtain-dataset
   []
-  (when-not (io/exists? "file://data/boulder-crime.csv")
+  (when-not (io/exists? "file://download/boulder-crime.csv")
     (log/info "Downloading Dataset")
     (io/copy "https://opendata.arcgis.com/datasets/fa19e19360e74c15a5ebe8b65cf523ad_0.csv"
-             "file://data/boulder-crime.csv"))
+             "file://download/boulder-crime.csv"))
   (log/info "Decompressing Dataset")
-  (ds/->dataset "file://data/boulder-crime.csv"
+  (ds/->dataset "file://download/boulder-crime.csv"
                 {:key-fn keyword}))
 
 

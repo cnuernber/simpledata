@@ -28,12 +28,12 @@
 
 (defn obtain-dataset
   []
-  (when-not (io/exists? "file://data/colornames.zip")
+  (when-not (io/exists? "file://download/colornames.zip")
     (log/info "Downloading Dataset")
     (io/copy (get-url "https://colornames.org/download/colornames.zip")
-             "file://data/colornames.zip"))
+             "file://download/colornames.zip"))
   (log/info "Decompressing Dataset")
-  (let [zipfile (ZipFile. (io/file "file://data/colornames.zip"))
+  (let [zipfile (ZipFile. (io/file "file://download/colornames.zip"))
         entry (->> zipfile
                    (.entries)
                    (iterator-seq)
