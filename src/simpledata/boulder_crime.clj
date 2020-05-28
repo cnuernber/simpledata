@@ -2,20 +2,17 @@
   (:require [tech.ml.dataset :as ds]
             [tech.v2.datatype.functional :as dfn]
             [tech.viz.vega :as vega]
-            [tech.io :as io]
             [simpledata.sql :as sql]
-            [clojure.tools.logging :as log]))
+            [simpledata.util :as util]))
 
 
 (defn obtain-dataset
   []
-  (when-not (io/exists? "file://download/boulder-crime.csv")
-    (log/info "Downloading Dataset")
-    (io/copy "https://opendata.arcgis.com/datasets/fa19e19360e74c15a5ebe8b65cf523ad_0.csv"
-             "file://download/boulder-crime.csv"))
-  (log/info "Decompressing Dataset")
-  (ds/->dataset "file://download/boulder-crime.csv"
-                {:key-fn keyword}))
+  (-> (util/cache-remote->local-file
+       "https://opendata.arcgis.com/datasets/fa19e19360e74c15a5ebe8b65cf523ad_0.csv"
+       "file://download/boulder-crime.csv")
+      (ds/->dataset {:key-fn keyword
+                     :dataset-name "boulder_crime"})))
 
 
 (defonce ds* (delay (obtain-dataset)))

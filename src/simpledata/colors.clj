@@ -2,45 +2,28 @@
   (:require [tech.ml.dataset :as ds]
             [tech.io :as io]
             [simpledata.sql :as sql]
+            [simpledata.util :as util]
             [clojure.tools.logging :as log])
   (:import [java.util.zip ZipFile]
            [smile.neighbor KDTree]))
 
-
-(defn- get-url
-  "Yet another downloader. Useful over `slurp` in cases where servers would like
-  to see a legit-seeming user-agent string."
-  [url]
-  (try
-    (let [ua "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36"]
-      (with-open [^java.io.InputStream
-                  inputstream (-> (java.net.URL. url)
-                                  (.openConnection)
-                                  (doto (.setRequestProperty "User-Agent" ua))
-                                  (.getContent))]
-        (let [outputstream (java.io.ByteArrayOutputStream.)]
-          (io/copy inputstream outputstream)
-          (.toByteArray outputstream))))
-    (catch Throwable t
-      (throw (ex-info "Failed to get-url"
-                      {:url url
-                       :t t})))))
-
 (defn obtain-dataset
   []
-  (when-not (io/exists? "file://download/colornames.zip")
-    (log/info "Downloading Dataset")
-    (io/copy (get-url "https://colornames.org/download/colornames.zip")
-             "file://download/colornames.zip"))
-  (log/info "Decompressing Dataset")
-  (let [zipfile (ZipFile. (io/file "file://download/colornames.zip"))
-        entry (->> zipfile
-                   (.entries)
-                   (iterator-seq)
-                   (first))]
-    (-> (ds/->dataset (.getInputStream zipfile entry)
-                      {:header-row? false
-                       :parser-fn {0 :string}})
+  (with-open [zipfile (-> (util/cache-remote->local-file
+                     #(util/url-user-agent->byte-array
+                       "https://colornames.org/download/colornames.zip"
+                       "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36")
+                     "file://download/colornames.zip")
+                    (io/file)
+                    (ZipFile.))]
+    (log/infof "Decompressing dataset colornames")
+    (-> zipfile
+        (.entries)
+        (iterator-seq)
+        (first)
+        (#(ds/->dataset (.getInputStream zipfile %)
+                        {:header-row? false
+                         :parser-fn {0 :string}}))
         (ds/set-dataset-name :colors)
         (ds/rename-columns {0 :color
                             1 :name
@@ -48,7 +31,7 @@
                             3 :count}))))
 
 
-(defonce dataset* (delay (obtain-dataset)))
+(def dataset* (delay (obtain-dataset)))
 
 
 (comment
