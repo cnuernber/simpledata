@@ -38,12 +38,12 @@
 
   (ds/descriptive-stats @dataset*)
 
-  (ds/rand-nth (ds/mapseq-reader @dataset*))
+  (rand-nth (ds/mapseq-reader @dataset*))
 
   ;;takes time
   (sql/insert-dataset! @dataset*)
 
-  (ds/sort-by-column 3 > @dataset*)
+  (ds/sort-by-column :count > @dataset*)
 
   )
 
