@@ -2,6 +2,8 @@
 
 A few problems, some quick explorations, export to/from SQL.
 
+Based on the TechAscent ml stack which includes [smile](https://haifengl.github.io/).
+
 
 ## Usage
 
