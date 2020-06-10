@@ -8,7 +8,7 @@ Based on the TechAscent ml stack which includes [smile](https://haifengl.github.
 ## Usage
 
 Precompile tech.ml.dataset.  In order to get the best possible general performance,
-we have rely on macros and the Clojure compiler in order to compile a lot of
+we rely on macros and the Clojure compiler in order to compile a lot of
 primitive-type-specific code.  This does have a startup performance time hit, however, in
 the case where the code hasn't been AOT compiled.
 
