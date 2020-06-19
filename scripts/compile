@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm -rf classes && mkdir classes && clj -e "(compile 'tech.ml.dataset)"

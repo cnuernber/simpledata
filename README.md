@@ -18,6 +18,11 @@ mkdir classes
 clojure -e "(compile 'tech.ml.dataset)"
 ```
 
+or, if you want:
+```console
+scripts/compile
+```
+
 - Make note to redo this step if you upgrade `tech.ml.dataset`.
 
 
