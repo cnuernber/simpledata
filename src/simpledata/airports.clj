@@ -8,20 +8,20 @@
   []
   (-> (ds/->dataset "https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat"
                     {:header-row? false})
-      (ds/rename-columns {0 :id
-                          1 :name
-                          2 :city
-                          3 :country
-                          4 :IATA
-                          5 :ICAO
-                          6 :lat
-                          7 :long
-                          8 :altitude
-                          9 :zone-offset
-                          10 :DST
-                          11 :zone-id
-                          12 :type
-                          13 :source})
+      (ds/rename-columns {"column-0" :id
+                          "column-1" :name
+                          "column-2" :city
+                          "column-3" :country
+                          "column-4" :IATA
+                          "column-5" :ICAO
+                          "column-6" :lat
+                          "column-7" :long
+                          "column-8" :altitude
+                          "column-9" :zone-offset
+                          "column-10" :DST
+                          "column-11" :zone-id
+                          "column-12" :type
+                          "column-13" :source})
       (vary-meta assoc :print-column-max-width 15)))
 
 
