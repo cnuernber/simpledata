@@ -25,10 +25,9 @@
                         {:header-row? false
                          :parser-fn {0 :string}}))
         (ds/set-dataset-name :colors)
-        (ds/rename-columns {0 :color
-                            1 :name
-                            2 :weight
-                            3 :count}))))
+        (ds/rename-columns {"column-0" :color
+                            "column-1" :name
+                            "column-2" :count}))))
 
 
 (def dataset* (delay (obtain-dataset)))

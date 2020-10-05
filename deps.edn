@@ -1,8 +1,8 @@
 {:paths ["src" "classes"]
  :deps {org.clojure/clojure            {:mvn/version "1.10.1"}
         org.postgresql/postgresql      {:mvn/version "42.2.12"}
-        techascent/tech.ml.dataset     {:mvn/version "2.03"}
-        techascent/tech.ml.dataset.sql {:mvn/version "0.3"}
+        techascent/tech.ml.dataset     {:mvn/version "4.04"}
+        techascent/tech.ml.dataset.sql {:mvn/version "0.5"}
         techascent/tech.ml             {:mvn/version "2.0"}
         techascent/tech.viz            {:mvn/version "0.3"}
         ch.qos.logback/logback-classic {:mvn/version "1.1.3"}
