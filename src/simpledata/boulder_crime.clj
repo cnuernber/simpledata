@@ -15,7 +15,7 @@
                      :dataset-name "boulder_crime"})))
 
 
-(defonce ds* (delay (obtain-dataset)))
+(def ds* (delay (obtain-dataset)))
 
 
 (comment
