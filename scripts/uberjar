@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+rm -rf classes && mkdir classes && clojure -e "(compile 'simpledata.main)"
+
+clojure -A:uberjar --main-class simpledata.main

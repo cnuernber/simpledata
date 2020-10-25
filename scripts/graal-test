@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+source scripts/activate-graal
+
+
+curl https:/raw.githubusercontent.com/Rdatatable/data.table/master/vignettes/flights14.csv --output flights14.csv
+
+scripts/uberjar
+
+graalvm/bin/native-image \
+    --report-unsupported-elements-at-runtime \
+    --initialize-at-build-time \
+    --no-fallback \
+    --no-server \
+    --allow-incomplete-classpath \
+    -J-Dclojure.spec.skip-macros=true \
+    -J-Dclojure.compiler.direct-linking=true \
+    -J-Dtech.v3.datatype.graal-native=true \
+    -jar target/simpledata.jar graal-test

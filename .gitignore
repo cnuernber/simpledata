@@ -4,3 +4,7 @@ data
 classes
 *.svg
 download
+target
+graalvm*
+flights14.csv
+graal-test
