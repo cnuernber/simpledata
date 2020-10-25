@@ -1,10 +1,10 @@
 (ns simpledata.flights
-  (:require [tech.ml.dataset :as ds]
-            [tech.ml.dataset.column :as ds-col]
-            [tech.v2.datatype.functional :as dfn]
-            [tech.v2.datatype :as dtype]
-            [tech.v2.datatype.typecast :as typecast]
-            [tech.v2.datatype.boolean-op :as boolean-op]
+  (:require [tech.v3.dataset :as ds]
+            [tech.v3.dataset.column :as ds-col]
+            [tech.v3.datatype.functional :as dfn]
+            [tech.v3.datatype.argops :as argops]
+            [tech.v3.datatype.unary-pred :as un-pred]
+            [tech.v3.datatype :as dtype]
             [primitive-math :as pmath]
             [criterium.core :as crit]))
 
@@ -15,42 +15,33 @@
 
 
 (comment
-  (crit/quick-bench  (->> (dfn/+ (flights "arr_delay")
-                                 (flights "dep_delay"))
-                          (dfn/argfilter #(dfn/< % 0))
-                          (dtype/ecount)))
-  ;;90ms - dfn functions pay a high cost for dispatch meaning they aren't to be used
-  ;;in tight loops.
+  (time (->> (dfn/+ (flights "arr_delay")
+                    (flights "dep_delay"))
+             (argops/argfilter #(dfn/< % 0))
+             (dtype/ecount)))
 
-  (crit/quick-bench  (->> (dfn/+ (flights "arr_delay")
-                                 (flights "dep_delay"))
-                          (filter #(pmath/< (long %) 0))
-                          (dtype/ecount)))
-  ;;16ms
+  (time  (->> (dfn/+ (flights "arr_delay")
+                     (flights "dep_delay"))
+              (filter #(pmath/< (long %) 0))
+              (dtype/ecount)))
 
-  (crit/quick-bench  (->> (dfn/+ (flights "arr_delay")
-                                 (flights "dep_delay"))
-                          (dfn/argfilter #(pmath/< (long %) 0))
-                          (dtype/ecount)))
-  ;;2.5ms
+  (time  (->> (dfn/+ (flights "arr_delay")
+                     (flights "dep_delay"))
+              (argops/argfilter #(pmath/< (long %) 0))
+              (dtype/ecount)))
 
-  (crit/quick-bench  (->> (dfn/+ (flights "arr_delay")
-                                 (flights "dep_delay"))
-                          (dfn/argfilter (fn [^long data]
-                                           (pmath/< data 0)))
-                          (dtype/ecount)))
-  ;;2.2ms
+  (time  (-> (dfn/+ (flights "arr_delay")
+                    (flights "dep_delay"))
+             (dfn/< 0)
+             (un-pred/bool-reader->indexes)
+             (dtype/ecount)))
 
-  (crit/quick-bench
-   (boolean-op/bool-reader-indexes->bitmap
-    {}
-    (let [arr-delay (typecast/datatype->reader :int16 (flights "arr_delay"))
-          dep-delay (typecast/datatype->reader :int16 (flights "dep_delay"))]
-      (dtype/make-reader :boolean
-                         (dtype/ecount arr-delay)
-                         (pmath/< (pmath/+ (.read arr-delay idx)
-                                           (.read dep-delay idx))
-                                  0)))))
-  ;;1.44ms
+  ;;Another way to get the same result is to use summation.  Booleans are
+  ;;interpreted very specifically below where false is 0 and 1 is true.
+  ;;Double summation is very fast.
+  (time (-> (dfn/+ (flights "arr_delay")
+                   (flights "dep_delay"))
+            (dfn/< 0)
+            (dfn/sum)))
 
   )

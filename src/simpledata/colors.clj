@@ -1,6 +1,7 @@
 (ns simpledata.colors
-  (:require [tech.ml.dataset :as ds]
-            [tech.io :as io]
+  (:require [tech.v3.dataset :as ds]
+            [tech.v3.datatype :as dtype]
+            [tech.v3.io :as io]
             [simpledata.sql :as sql]
             [simpledata.util :as util]
             [clojure.tools.logging :as log])
@@ -9,6 +10,7 @@
 
 (defn obtain-dataset
   []
+  ;;Useful example of how to set your user agent
   (with-open [zipfile (-> (util/cache-remote->local-file
                      #(util/url-user-agent->byte-array
                        "https://colornames.org/download/colornames.zip"
@@ -22,15 +24,13 @@
         (iterator-seq)
         (first)
         (#(ds/->dataset (.getInputStream zipfile %)
-                        {:header-row? false
-                         :parser-fn {0 :string}}))
-        (ds/set-dataset-name :colors)
-        (ds/rename-columns {"column-0" :color
-                            "column-1" :name
-                            "column-2" :count}))))
+                        {:parser-fn {:color :string}
+                         :key-fn keyword
+                         :file-type :csv}))
+        (ds/set-dataset-name :colors))))
 
 
-(def dataset* (delay (obtain-dataset)))
+(defonce dataset* (delay (obtain-dataset)))
 
 
 (comment
@@ -42,29 +42,52 @@
   ;;takes time
   (sql/insert-dataset! @dataset*)
 
-  (ds/sort-by-column :count > @dataset*)
+  (ds/sort-by-column @dataset* :count >)
 
   )
 
 
 (defn kd-tree-inputs
   []
-  {:rgb (->> (@dataset* :color)
-             (map (fn [color]
-                    (double-array
-                     [(Integer/parseInt (.substring color 0 2) 16)
-                      (Integer/parseInt (.substring color 2 4) 16)
-                      (Integer/parseInt (.substring color 4 6) 16)])) ))
-   :names (@dataset* :name)})
+  (-> (assoc @dataset*
+             ;;Perform an elemwise mapping specifying the result type.
+             :rgb (-> (dtype/emap
+                       ;;Type-hinting the color makes this method *much* faster because
+                       ;;we are calling the string member function substring over and over
+                       ;;again.
+                       (fn [name ^String color]
+                         (try
+                           (double-array
+                            [(Integer/parseInt (.substring color 0 2) 16)
+                             (Integer/parseInt (.substring color 2 4) 16)
+                             (Integer/parseInt (.substring color 4 6) 16)])
+                           (catch Throwable e
+                             (log/warnf e "Failed to parse color %s-%s" name color)
+                             nil)))
+                       :object
+                       (@dataset* :bestName)
+                       (@dataset* :hexCode))
+                      ;;Clone to make the mapping concrete as opposed to lazy.
+                      ;;Since we are going to filter below and then iterate through it again
+                      ;;it avoids reparsing the strings multiple times.  Often clone isn't
+                      ;;necessary
+                      (dtype/clone)))
+      ;;Filter out the mappings that failed.
+      (ds/filter-column :rgb identity)))
 
 
 (defn obtain-kd-tree
   []
-  (let [{:keys [rgb names]} (kd-tree-inputs)]
+  ;;You can destructure datasets like maps.
+  (let [{:keys [rgb bestName]} (kd-tree-inputs)]
+    ;;rgb is all double arrays so into-array produces an array-of-double-arrays
     (KDTree. (into-array rgb)
-             (into-array names))))
+             ;;bestName is all strings so it produces an array of strings
+             (into-array bestName))))
+
 
 (defonce kd-tree* (delay (obtain-kd-tree)))
+
 
 (defn knn
   [rgb n]

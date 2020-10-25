@@ -15,7 +15,7 @@ the case where the code hasn't been AOT compiled.
 ```console
 rm -rf classes
 mkdir classes
-clojure -e "(compile 'tech.ml.dataset)"
+clojure -e "(compile 'tech.v3.dataset)"
 ```
 
 or, if you want:

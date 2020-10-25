@@ -1,5 +1,5 @@
 (ns simpledata.util
-  (:require [tech.io :as io]
+  (:require [tech.v3.io :as io]
             [clojure.tools.logging :as log])
   (:import [java.io InputStream ByteArrayOutputStream]))
 

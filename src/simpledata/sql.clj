@@ -1,6 +1,6 @@
 (ns simpledata.sql
-  (:require [tech.ml.dataset.sql :as ds-sql]
-            [tech.ml.dataset.sql.impl :as ds-sql-impl]
+  (:require [tech.v3.dataset.sql :as ds-sql]
+            [tech.v3.dataset.sql.impl :as ds-sql-impl]
             [next.jdbc :as jdbc])
   (:import [java.sql Connection]))
 

@@ -1,6 +1,6 @@
 (ns simpledata.github
-  (:require [tech.ml.dataset :as ds]
-            [tech.io :as io]
+  (:require [tech.v3.dataset :as ds]
+            [tech.v3.io :as io]
             [tech.viz.vega :as vega]))
 
 

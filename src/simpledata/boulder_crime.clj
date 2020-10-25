@@ -1,10 +1,11 @@
 (ns simpledata.boulder-crime
-  (:require [tech.ml.dataset :as ds]
-            [tech.v2.datatype.functional :as dfn]
+  (:require [tech.v3.dataset :as ds]
+            [tech.v3.datatype.functional :as dfn]
             [tech.viz.vega :as vega]
             [simpledata.sql :as sql]
             [simpledata.util :as util]))
 
+;;Currently broken - the city of Boulder has removed this data at this time.
 
 (defn obtain-dataset
   []
