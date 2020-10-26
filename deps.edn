@@ -1,7 +1,6 @@
 {:paths ["src" "classes"]
  :deps {org.clojure/clojure            {:mvn/version "1.10.2-alpha2"}
         org.postgresql/postgresql      {:mvn/version "42.2.12"}
-
         techascent/tech.ml.dataset     {:mvn/version "5.00-alpha-13"}
         techascent/tech.ml.dataset.sql {:mvn/version "5.00-alpha-9"}
         techascent/tech.viz            {:mvn/version "0.3"}
@@ -9,7 +8,6 @@
         criterium                      {:mvn/version "0.4.5"}}
  :aliases
  {:uberjar
-  {:deps {techascent/tech.ml.dataset  {:mvn/version "5.00-alpha-13"}
-          uberdeps/uberdeps {:mvn/version "1.0.2"}}
+  {:extra-deps {uberdeps/uberdeps {:mvn/version "1.0.2"}}
    :main-opts ["-m" "uberdeps.uberjar"]
    }}}
