@@ -8,3 +8,4 @@ target
 graalvm*
 flights14.csv
 graal-test
+*.arrow

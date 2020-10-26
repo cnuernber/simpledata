@@ -4,8 +4,7 @@ set -e
 
 source scripts/activate-graal
 
-
-curl https:/raw.githubusercontent.com/Rdatatable/data.table/master/vignettes/flights14.csv --output flights14.csv
+# curl https:/raw.githubusercontent.com/Rdatatable/data.table/master/vignettes/flights14.csv --output flights14.csv
 
 scripts/uberjar
 
