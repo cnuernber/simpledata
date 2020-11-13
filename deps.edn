@@ -1,7 +1,7 @@
 {:paths ["src" "classes"]
  :deps {org.clojure/clojure            {:mvn/version "1.10.2-alpha2"}
         org.postgresql/postgresql      {:mvn/version "42.2.12"}
-        techascent/tech.ml.dataset     {:mvn/version "5.00-alpha-13"}
+        techascent/tech.ml.dataset     {:mvn/version "5.00-beta-2"}
         techascent/tech.ml.dataset.sql {:mvn/version "5.00-alpha-9"}
         techascent/tech.viz            {:mvn/version "0.3"}
         seancorfield/next.jdbc         {:mvn/version "1.0.424"}
