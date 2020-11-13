@@ -1,10 +1,9 @@
 {:paths ["src" "classes"]
  :deps {org.clojure/clojure            {:mvn/version "1.10.2-alpha2"}
         org.postgresql/postgresql      {:mvn/version "42.2.12"}
-        org.apache.arrow/arrow-memory-netty {:mvn/version "1.0.0"}
-        org.apache.arrow/arrow-memory-core {:mvn/version "1.0.0"}
-        org.apache.arrow/arrow-vector {:mvn/version "1.0.0"}
-        techascent/tech.ml.dataset     {:mvn/version "5.00-alpha-13"}
+        org.apache.parquet/parquet-hadoop {:mvn/version "1.11.0"}
+        org.apache.hadoop/hadoop-common {:mvn/version "3.1.1"}
+        techascent/tech.ml.dataset     {:mvn/version "5.00-alpha-25"}
         techascent/tech.ml.dataset.sql {:mvn/version "5.00-alpha-9"}
         techascent/tech.viz            {:mvn/version "0.3"}
         seancorfield/next.jdbc         {:mvn/version "1.0.424"}
