@@ -25,12 +25,17 @@
         (first)
         (#(ds/->dataset (.getInputStream zipfile %)
                         {:parser-fn {:color :string}
+                         :header-row? false
                          :key-fn keyword
                          :file-type :csv}))
-        (ds/set-dataset-name :colors))))
+        (ds/set-dataset-name :colors)
+        (ds/rename-columns {:column-0 :hexCode
+                            :column-1 :bestName
+                            :column-2 :weight
+                            :column-3 :votes}))))
 
 
-(defonce dataset* (delay (obtain-dataset)))
+(def dataset* (delay (obtain-dataset)))
 
 
 (comment
